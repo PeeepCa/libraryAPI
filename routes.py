@@ -1,3 +1,5 @@
+# Routes init
+
 from flask import request, jsonify
 from app import app, db
 from models import Book, Loan
@@ -7,18 +9,31 @@ from datetime import datetime
 # Book endpoints
 @app.route('/api/books', methods=['GET'])
 def get_books():
+    """
+    Get all books.
+    :return: JSON representation of all books
+    """
     books = Book.query.all()
     return jsonify([book.to_dict() for book in books])
 
 
 @app.route('/api/books/<int:id>', methods=['GET'])
 def get_book(id):
+    """
+    Get book by ID.
+    :param id:  ID of the book
+    :return: JSON representation of the book
+    """
     book = Book.query.get_or_404(id)
     return jsonify(book.to_dict())
 
 
 @app.route('/api/books', methods=['POST'])
 def create_book():
+    """
+    Create a new book.
+    :return: JSON representation of the new book
+    """
     data = request.get_json()
     if not data or not 'title' in data or not 'author' in data:
         return jsonify({'error': 'Missing required fields'}), 400
@@ -35,6 +50,11 @@ def create_book():
 
 @app.route('/api/books/<int:id>', methods=['PUT'])
 def update_book(id):
+    """
+    Update book details.
+    :param id:
+    :return: JSON representation of the updated book
+    """
     book = Book.query.get_or_404(id)
     data = request.get_json()
 
@@ -48,6 +68,11 @@ def update_book(id):
 
 @app.route('/api/books/<int:id>', methods=['DELETE'])
 def delete_book(id):
+    """
+    Delete book in case of lost, damaged or broken book.
+    :param id:
+    :return:
+    """
     book = Book.query.get_or_404(id)
     db.session.delete(book)
     db.session.commit()
@@ -56,6 +81,10 @@ def delete_book(id):
 
 @app.route('/api/books/available', methods=['GET'])
 def get_available_books():
+    """
+    Get all available books.
+    :return: JSON representation of all available books
+    """
     books = Book.query.filter_by(is_available=True).all()
     return jsonify([book.to_dict() for book in books])
 
@@ -63,12 +92,20 @@ def get_available_books():
 # Loan endpoints
 @app.route('/api/loans', methods=['GET'])
 def get_loans():
+    """
+    Get all loans.
+    :return: JSON representation of all loans
+    """
     loans = Loan.query.all()
     return jsonify([loan.to_dict() for loan in loans])
 
 
 @app.route('/api/loans/user', methods=['GET'])
 def get_user_loans():
+    """
+    Get all loans for the current user.
+    :return: JSON representation of all loans for the current user
+    """
     user_id = request.headers.get('x-user-id')
     if not user_id: return jsonify({'error': 'User ID not provided in header'}), 400
 
@@ -78,6 +115,10 @@ def get_user_loans():
 
 @app.route('/api/loans', methods=['POST'])
 def create_loan():
+    """
+    Create a new loan.
+    :return: JSON representation of the new loan
+    """
     user_id = request.headers.get('x-user-id')
     if not user_id: return jsonify({'error': 'User ID not provided in header'}), 400
 
@@ -100,6 +141,11 @@ def create_loan():
 
 @app.route('/api/loans/<int:book_id>/return', methods=['PUT'])
 def return_book(book_id):
+    """
+    Return a book.
+    :param book_id:
+    :return: JSON representation of the returned loan
+    """
     user_id = request.headers.get('x-user-id')
     if not user_id: return jsonify({'error': 'User ID not provided in header'}), 400
 

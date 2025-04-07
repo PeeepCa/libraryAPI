@@ -9,7 +9,7 @@ app.config.from_object(Config)
 # Initialize database
 db = SQLAlchemy(app)
 
-# Import routes after db initialization to avoid circular imports
+# Import routes after db initialization
 from routes import *
 
 if __name__ == '__main__':
