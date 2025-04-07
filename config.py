@@ -1,6 +1,5 @@
 # Flask init
 
-
 import os
 
 
