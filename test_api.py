@@ -1,6 +1,7 @@
 import requests
 import pytest
 
+
 # Base URL for the API
 BASE_URL = "http://localhost:5000/api"
 USER_ID = "42"
